@@ -34,11 +34,11 @@ int player_move(int, int, Player*);
 int check_pos(int, int, Player*); 
 int draw_room(Room*);
 Room* create_room(int x, int y, int height, int width); 
+int connect_doors(Position* door_one, Position* door_two);
 
 int main () {
     Player* user;
     user = player_setup();
-
 
     screen_setup();
 
@@ -77,6 +77,8 @@ Room** map_setup() {
 
     rooms[2] = create_room(40, 10, 6, 8);
     draw_room(rooms[2]);
+    
+    connect_doors(rooms[0]->doors[3], rooms[2]->doors[1]);
 
     return rooms;
 }
@@ -139,6 +141,42 @@ Room* create_room(int x, int y, int height, int width) {
     return new_room;
 }
 
+int connect_doors(Position* door_one, Position* door_two) {
+    Position temp;
+
+    temp.x = door_one->x;
+    temp.y = door_one->y;
+
+    // path finding
+
+    while(1) {
+        // step left
+        if (abs((temp.x - 1) - door_two->x) < abs(temp.x - door_two->x) && (mvinch(temp.y, temp.x - 1) == ' ')) {
+            mvprintw(temp.y, temp.x - 1, "#");
+            temp.x = temp.x - 1;
+        }
+        // step right
+        else if (abs((temp.x + 1) - door_two->x) < abs(temp.x - door_two->x) && (mvinch(temp.y, temp.x + 1) == ' ')) {
+            mvprintw(temp.y, temp.x + 1, "#");
+            temp.x = temp.x + 1;
+        }
+        // step up
+        else if (abs((temp.y - 1) - door_two->y) < abs(temp.y - door_two->y) && (mvinch(temp.y - 1, temp.x) == ' ')) {
+            mvprintw(temp.y - 1, temp.x, "#");
+            temp.y = temp.y - 1;
+        }
+        // step down
+        else if (abs((temp.y + 1) - door_two->y) < abs(temp.y - door_two->y) && (mvinch(temp.y + 1, temp.x) == ' ')) {
+            mvprintw(temp.y + 1, temp.x, "#");
+            temp.y = temp.y + 1;
+        } 
+        else {
+            return 0;
+        }
+    }
+    return 1;
+}
+
 Player* player_setup() {
     Player* new_player;
     new_player = (Player*)malloc(sizeof(Player));
@@ -194,6 +232,8 @@ int check_pos(int new_x, int new_y, Player* user) {
 
     switch(mvinch(new_y, new_x)) {
         case '.':
+        case '+':
+        case '#':
             player_move(new_x, new_y, user);
             break;
 
@@ -214,3 +254,4 @@ int player_move(int x, int y, Player* user) {
     move(user->position.y, user->position.x);
 }
  
+
