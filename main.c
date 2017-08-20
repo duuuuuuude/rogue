@@ -1,20 +1,28 @@
 // TODO: GET TO KNOW HOW NCURSES COORDS WORK
 #include <stdlib.h>
 #include <ncurses.h>
+#include <time.h>
+
+typedef struct Position {
+    int x;
+    int y;
+    // TILE_TYPE
+} Position;
 
 typedef struct Room {
-    int x_pos;
-    int y_pos;
+    Position position;
     int height;
     int width;
+
+    Position** doors;
+    
     // Each r. stores info of how many monsters/items it has
     // Monster** monsters
     // Item** items
 } Room;
 
 typedef struct Player {
-    int x_pos;
-    int y_pos;
+    Position position;
     int health;
 } Player;
 
@@ -73,30 +81,58 @@ Room** map_setup() {
 int draw_room(Room* room) {
     int x;
     int y;
-    for (x = room->x_pos; x < room->x_pos + room->width; x++) {
+    for (x = room->position.x; x < room->position.x + room->width; x++) {
         // top and bottom
-        mvprintw(room->y_pos, x, "-");
-        mvprintw(room->y_pos + room->height - 1, x, "-");
+        mvprintw(room->position.y, x, "-");
+        mvprintw(room->position.y + room->height - 1, x, "-");
     }
-    for (y = room->y_pos + 1; y < room->y_pos + room->height - 1; y++) {
+    for (y = room->position.y + 1; y < room->position.y + room->height - 1; y++) {
         // walls 
-        mvprintw(y, room->x_pos, "|");
-        mvprintw(y, room->x_pos + room->width - 1, "|");
+        mvprintw(y, room->position.x, "|");
+        mvprintw(y, room->position.x + room->width - 1, "|");
         // floors 
-        for(x = room->x_pos + 1; x < room->x_pos + room->width - 1; x++) {
+        for(x = room->position.x + 1; x < room->position.x + room->width - 1; x++) {
             mvprintw(y, x, ".");
         }
     }
+
+    mvprintw(room->doors[0]->y, room->doors[0]->x, "+");
+    mvprintw(room->doors[1]->y, room->doors[1]->x, "+");
+    mvprintw(room->doors[2]->y, room->doors[2]->x, "+");
+    mvprintw(room->doors[3]->y, room->doors[3]->x, "+");
 }
 
 Room* create_room(int x, int y, int height, int width) {
     Room* new_room;
     new_room = (Room*)malloc(sizeof(Room));
 
-    new_room->x_pos = x;
-    new_room->y_pos = y;
+    new_room->position.x = x;
+    new_room->position.y = y;
     new_room->height = height;
     new_room->width = width;
+
+    srand(time(NULL));
+    
+    new_room->doors = (Position**)malloc(sizeof(Position*) * 4);
+
+    // top door
+    new_room->doors[0] = (Position*)malloc(sizeof(Position));
+    new_room->doors[0]->x = rand() % width + new_room->position.x;
+    new_room->doors[0]->y = new_room->position.y;
+
+    // bottom door
+    new_room->doors[1] = (Position*)malloc(sizeof(Position));
+    new_room->doors[1]->x = rand() % width + new_room->position.x;
+    new_room->doors[1]->y = new_room->position.y + height;
+
+    // left door
+    new_room->doors[2] = (Position*)malloc(sizeof(Position));
+    new_room->doors[2]->y = rand() % height + new_room->position.y;
+    new_room->doors[2]->x = new_room->position.x;
+
+    new_room->doors[3] = (Position*)malloc(sizeof(Position));
+    new_room->doors[3]->y = rand() % height + new_room->position.y;
+    new_room->doors[3]->x = new_room->position.x + width;
 
     return new_room;
 }
@@ -105,12 +141,12 @@ Player* player_setup() {
     Player* new_player;
     new_player = (Player*)malloc(sizeof(Player));
 
-    new_player->x_pos = 14;
-    new_player->y_pos = 14;
+    new_player->position.x = 14;
+    new_player->position.y = 14;
     new_player->health = 20;
 
-    mvprintw(new_player->y_pos, new_player->x_pos, "@");
-    move(new_player->y_pos, new_player->x_pos); // move cursor
+    mvprintw(new_player->position.y, new_player->position.x, "@");
+    move(new_player->position.y, new_player->position.x); // move cursor
 
     return new_player;
 }
@@ -123,26 +159,26 @@ int handle_input(int ch, Player* user) {
         // move up
         case 'w':
             // NOTE: user's struct coords aren't actually being changed 
-            new_x = user->x_pos;
-            new_y = user->y_pos - 1;
+            new_x = user->position.x;
+            new_y = user->position.y - 1;
             break;
 
         // move down
         case 's':
-            new_x = user->x_pos;
-            new_y = user->y_pos + 1;
+            new_x = user->position.x;
+            new_y = user->position.y + 1;
             break;
 
         // move left
         case 'a':
-            new_x = user->x_pos - 1;
-            new_y = user->y_pos;
+            new_x = user->position.x - 1;
+            new_y = user->position.y;
             break;
 
         // move right
         case 'd':
-            new_x = user->x_pos + 1;
-            new_y = user->y_pos;
+            new_x = user->position.x + 1;
+            new_y = user->position.y;
             break;
 
         default:
@@ -160,19 +196,19 @@ int check_pos(int new_x, int new_y, Player* user) {
             break;
 
         default:
-            move(user->y_pos, user->x_pos);
+            move(user->position.y, user->position.x);
             break;
     }
 }
 
 /* change player's coords */
 int player_move(int x, int y, Player* user) {
-    mvprintw(user->y_pos, user->x_pos, ".");
+    mvprintw(user->position.y, user->position.x, ".");
     
-    user->x_pos = x;
-    user->y_pos = y;
+    user->position.x = x;
+    user->position.y = y;
 
-    mvprintw(user->y_pos, user->x_pos, "@");
-    move(user->y_pos, user->x_pos);
+    mvprintw(user->position.y, user->position.x, "@");
+    move(user->position.y, user->position.x);
 }
  
