@@ -75,10 +75,11 @@ Room** map_setup() {
     rooms[1] = create_room(40, 2, 6, 8);
     draw_room(rooms[1]);
 
-    rooms[2] = create_room(40, 10, 6, 8);
+    rooms[2] = create_room(40, 10, 6, 12);
     draw_room(rooms[2]);
     
     connect_doors(rooms[0]->doors[3], rooms[2]->doors[1]);
+    connect_doors(rooms[1]->doors[2], rooms[0]->doors[0]);
 
     return rooms;
 }
@@ -143,36 +144,46 @@ Room* create_room(int x, int y, int height, int width) {
 
 int connect_doors(Position* door_one, Position* door_two) {
     Position temp;
+    Position prev;
 
     temp.x = door_one->x;
     temp.y = door_one->y;
-
+    
+    prev = temp;
     // path finding
-
+    int count = 0;
     while(1) {
         // step left
         if (abs((temp.x - 1) - door_two->x) < abs(temp.x - door_two->x) && (mvinch(temp.y, temp.x - 1) == ' ')) {
-            mvprintw(temp.y, temp.x - 1, "#");
+            prev.x = temp.x;
             temp.x = temp.x - 1;
         }
         // step right
         else if (abs((temp.x + 1) - door_two->x) < abs(temp.x - door_two->x) && (mvinch(temp.y, temp.x + 1) == ' ')) {
-            mvprintw(temp.y, temp.x + 1, "#");
+            prev.x = temp.x;
             temp.x = temp.x + 1;
         }
         // step up
         else if (abs((temp.y - 1) - door_two->y) < abs(temp.y - door_two->y) && (mvinch(temp.y - 1, temp.x) == ' ')) {
-            mvprintw(temp.y - 1, temp.x, "#");
+            prev.y = temp.y;
             temp.y = temp.y - 1;
         }
         // step down
         else if (abs((temp.y + 1) - door_two->y) < abs(temp.y - door_two->y) && (mvinch(temp.y + 1, temp.x) == ' ')) {
-            mvprintw(temp.y + 1, temp.x, "#");
+            prev.y = temp.y;
             temp.y = temp.y + 1;
         } 
         else {
-            return 0;
+            if (count == 0) {
+                temp = prev;
+                count++;
+                continue;
+            } 
+            else {
+                return 0;
+            }
         }
+        mvprintw(temp.y, temp.x, "#");
     }
     return 1;
 }
