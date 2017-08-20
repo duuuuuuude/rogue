@@ -113,26 +113,27 @@ Room* create_room(int x, int y, int height, int width) {
 
     srand(time(NULL));
     
-    new_room->doors = (Position**)malloc(sizeof(Position*) * 4);
+    new_room->doors = malloc(sizeof(Position) * 4);
 
     // top door
-    new_room->doors[0] = (Position*)malloc(sizeof(Position));
+    new_room->doors[0] = malloc(sizeof(Position));
     new_room->doors[0]->x = rand() % width + new_room->position.x;
     new_room->doors[0]->y = new_room->position.y;
 
     // bottom door
-    new_room->doors[1] = (Position*)malloc(sizeof(Position));
+    new_room->doors[1] = malloc(sizeof(Position));
     new_room->doors[1]->x = rand() % width + new_room->position.x;
-    new_room->doors[1]->y = new_room->position.y + height;
+    new_room->doors[1]->y = new_room->position.y + height - 1;
 
     // left door
-    new_room->doors[2] = (Position*)malloc(sizeof(Position));
+    new_room->doors[2] = malloc(sizeof(Position));
     new_room->doors[2]->y = rand() % height + new_room->position.y;
     new_room->doors[2]->x = new_room->position.x;
-
-    new_room->doors[3] = (Position*)malloc(sizeof(Position));
+    
+    // right door
+    new_room->doors[3] = malloc(sizeof(Position));
     new_room->doors[3]->y = rand() % height + new_room->position.y;
-    new_room->doors[3]->x = new_room->position.x + width;
+    new_room->doors[3]->x = new_room->position.x + width - 1;
 
     return new_room;
 }
