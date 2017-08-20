@@ -39,7 +39,9 @@ int main () {
     Player* user;
     user = player_setup();
 
+
     screen_setup();
+
     map_setup();
 
     int kek = 0;
@@ -54,7 +56,8 @@ int main () {
     return 0;
 }
 
-void screen_setup() {
+void screen_setup() { 
+    srand(time(NULL));
     initscr();
     printw("Hello world!");
     noecho();
@@ -110,8 +113,6 @@ Room* create_room(int x, int y, int height, int width) {
     new_room->position.y = y;
     new_room->height = height;
     new_room->width = width;
-
-    srand(time(NULL));
     
     new_room->doors = (Position**)malloc(sizeof(Position*) * 4);
 
@@ -123,16 +124,17 @@ Room* create_room(int x, int y, int height, int width) {
     // bottom door
     new_room->doors[1] = (Position*)malloc(sizeof(Position));
     new_room->doors[1]->x = rand() % width + new_room->position.x;
-    new_room->doors[1]->y = new_room->position.y + height;
+    new_room->doors[1]->y = new_room->position.y + height - 1;
 
     // left door
     new_room->doors[2] = (Position*)malloc(sizeof(Position));
     new_room->doors[2]->y = rand() % height + new_room->position.y;
     new_room->doors[2]->x = new_room->position.x;
 
+    // right door
     new_room->doors[3] = (Position*)malloc(sizeof(Position));
     new_room->doors[3]->y = rand() % height + new_room->position.y;
-    new_room->doors[3]->x = new_room->position.x + width;
+    new_room->doors[3]->x = new_room->position.x + width - 1;
 
     return new_room;
 }
