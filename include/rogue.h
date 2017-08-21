@@ -78,4 +78,6 @@ Monster* create_monster(char symbol, int health, int attack, int speed, int defe
 int set_starting_position(Monster* monster, Room* room);
 int move_monsters(Level*);
 int pathfinding_seek(Position*, Position*);
+int pathfinding_random(Position*); 
+
 #endif

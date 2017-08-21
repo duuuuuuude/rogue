@@ -11,7 +11,7 @@ int main () {
         Position* new_position = handle_input(ch, level->user);
         check_pos(new_position, level->user, level->tiles);
         move_monsters(level);
-        //move(level->user->position->y, level->user->position->x);
+        move(level->user->position->y, level->user->position->x);
     }
 
     endwin(); 
