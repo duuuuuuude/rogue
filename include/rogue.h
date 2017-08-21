@@ -11,8 +11,8 @@ typedef struct Level {
     int level;
     int num_of_rooms;
     struct Room** rooms;
-    //struct Monster** monsters;
-    //int num_of_monsters;
+    struct Monster** monsters;
+    int num_of_monsters;
 } Level;
 
 typedef struct Position {
@@ -38,6 +38,18 @@ typedef struct Player {
     int health;
 } Player;
 
+typedef struct Monster {
+    // represent monster on the map
+    char symbol;
+    int health;
+    int attack;
+    int speed;
+    int defence;
+    int pathfinding;
+
+    Position position;
+} Monster;
+
 void screen_setup();
 
 // level/map functions
@@ -56,5 +68,11 @@ int player_move(Position*, Player*, char**);
 int draw_room(Room*);
 Room* create_room(int x, int y, int height, int width); 
 int connect_doors(Position* door_one, Position* door_two);
+
+// monster functions 
+int add_monsters(Level*);
+Monster* select_monster(int level); 
+Monster* create_monster(char symbol, int health, int attack, int speed, int defence, int pathfinding);
+int set_starting_position(Monster* monster, Room* room);
 
 #endif
