@@ -6,6 +6,15 @@
 #include <ncurses.h>
 #include <time.h>
 
+typedef struct Level {
+    char** tiles;
+    int level;
+    int num_of_rooms;
+    struct Room** rooms;
+    //struct Monster** monsters;
+    //int num_of_monsters;
+} Level;
+
 typedef struct Position {
     int x;
     int y;
@@ -30,14 +39,22 @@ typedef struct Player {
 } Player;
 
 void screen_setup();
-Room** map_setup();
+
+// level/map functions
+Room** rooms_setup();
+char** save_lvl_positions();
+Level* create_level(int);
+
+// player functions
 Player* player_setup();
-int handle_input(int, Player*);
-int player_move(int, int, Player*);
-int check_pos(int, int, Player*); 
+
+Position* handle_input(int, Player*);
+int check_pos(Position*, Player*, char**); 
+int player_move(Position*, Player*, char**);
+
+// room functions
 int draw_room(Room*);
 Room* create_room(int x, int y, int height, int width); 
 int connect_doors(Position* door_one, Position* door_two);
-
 
 #endif
