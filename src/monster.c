@@ -48,30 +48,66 @@ Monster* select_monster(int level) {
 }
 
 Monster* create_monster(char symbol, int health, int attack, int speed, int defence, int pathfinding) {
-   Monster* new_monster = (Monster*)malloc(sizeof(Monster));
+    Monster* new_monster = (Monster*)malloc(sizeof(Monster));
 
-   new_monster->symbol = symbol;
-   new_monster->health = health;
-   new_monster->attack = attack;
-   new_monster->speed = speed;
-   new_monster->defence = defence;
-   new_monster->pathfinding = pathfinding;
+    new_monster->symbol = symbol;
+    new_monster->health = health;
+    new_monster->attack = attack;
+    new_monster->speed = speed;
+    new_monster->defence = defence;
+    new_monster->pathfinding = pathfinding;
 
-   return new_monster;
+    sprintf(new_monster->string, "%c", symbol);
+
+    new_monster->position = malloc(sizeof(Position));
+
+    return new_monster;
 }
 
 int set_starting_position(Monster* monster, Room* room) {
-    char buffer[8];
 
-    monster->position.x = (rand() % (room->width - 2)) + room->position.x + 1;
-    monster->position.y = (rand() % (room->height - 2)) + room->position.y + 1;
+    monster->position->x = (rand() % (room->width - 2)) + room->position.x + 1;
+    monster->position->y = (rand() % (room->height - 2)) + room->position.y + 1;
 
-    sprintf(buffer, "%c", monster->symbol);
-
-    mvprintw(monster->position.y, monster->position.x, buffer);
+    mvprintw(monster->position->y, monster->position->x, monster->string);
 
 }
 
+int move_monsters(Level* level) {
+    for (int x = 0; x < level->num_of_monsters; x++) {
+        if (level->monsters[x]->pathfinding == 1) {
+            // random
+        } 
+        else {
+            // seek
+            mvprintw(level->monsters[x]->position->y, level->monsters[x]->position->x, ".");
+            pathfinding_seek(level->monsters[x]->position, level->user->position);
+            mvprintw(level->monsters[x]->position->y, level->monsters[x]->position->x, level->monsters[x]->string);
+        }
+    }
+}
+int pathfinding_seek(Position* start, Position* destination) {
+
+    if (abs((start->x - 1) - destination->x) < abs(start->x - destination->x) && (mvinch(start->y, start->x - 1) == '.')) {
+        start->x = start->x - 1;
+    }
+    // step right
+    else if (abs((start->x + 1) - destination->x) < abs(start->x - destination->x) && (mvinch(start->y, start->x + 1) == '.')) {
+        start->x = start->x + 1;
+    }
+    // step up
+    else if (abs((start->y - 1) - destination->y) < abs(start->y - destination->y) && (mvinch(start->y - 1, start->x) == '.')) {
+        start->y = start->y - 1;
+    }
+    // step down
+    else if (abs((start->y + 1) - destination->y) < abs(start->y - destination->y) && (mvinch(start->y + 1, start->x) == '.')) {
+        start->y = start->y + 1;
+    } 
+    else {
+        // do nothing
+    }
+    return 1;
+}
 /*
  * Spider:
  *      symbol: X
