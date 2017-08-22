@@ -6,8 +6,11 @@ int main () {
     Level* level = create_level(1);
 
     // game loop
+    print_gamehub(level);
+    
     int ch;
     while((ch = getch()) != 'q') {
+        print_gamehub(level);
         Position* new_position = handle_input(ch, level->user);
         check_pos(new_position, level);
         move_monsters(level);
@@ -19,11 +22,4 @@ int main () {
     return 0;
 }
 
-void screen_setup() { 
-    srand(time(NULL));
-    initscr();
-    printw("Hello world!");
-    noecho();
-    refresh();
-}
 

@@ -8,6 +8,7 @@ int combat(Player* player, Monster* monster, int order) {
             player->health -= monster->attack;
         } else {
             kill_monster(monster);
+            player->experience++;
         }
     } else {
         // monster attacking

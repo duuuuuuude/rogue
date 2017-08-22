@@ -8,6 +8,9 @@ Player* player_setup() {
     new_player->position->y = 14;
     new_player->health = 20;
     new_player->attack = 1;
+    new_player->gold = 0;
+    new_player->max_health = 20;
+    new_player->experience = 0;
     mvprintw(new_player->position->y, new_player->position->x, "@");
     move(new_player->position->y, new_player->position->x); // move cursor
 
