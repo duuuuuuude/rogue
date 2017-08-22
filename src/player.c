@@ -4,12 +4,10 @@ Player* player_setup() {
     Player* new_player;
     new_player = (Player*)malloc(sizeof(Player));
     new_player->position = malloc(sizeof(Position));
-
     new_player->position->x = 14;
-
     new_player->position->y = 14;
     new_player->health = 20;
-
+    new_player->attack = 1;
     mvprintw(new_player->position->y, new_player->position->x, "@");
     move(new_player->position->y, new_player->position->x); // move cursor
 
@@ -53,13 +51,22 @@ Position* handle_input(int ch, Player* user) {
 }
 
 /* check what is at next position */
-int check_pos(Position* new_position, Player* user, char** level) {
-
-    switch(mvinch(new_position->y, new_position->x)) {
+int check_pos(Position* next_pos, Level* level) {
+    Player* user;
+    user = level->user;
+    int space;
+   
+    switch(mvinch(next_pos->y, next_pos->x)) {
         case '.':
         case '+':
         case '#':
-            player_move(new_position, user, level);
+            player_move(next_pos, user, level->tiles);
+            break;
+
+        case 'X':
+        case 'G':
+        case 'T':
+            combat(user, get_monster_at(next_pos, level->monsters), 1);
             break;
 
         default:

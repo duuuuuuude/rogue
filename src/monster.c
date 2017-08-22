@@ -56,6 +56,7 @@ Monster* create_monster(char symbol, int health, int attack, int speed, int defe
     new_monster->speed = speed;
     new_monster->defence = defence;
     new_monster->pathfinding = pathfinding;
+    new_monster->alive = 1;
 
     sprintf(new_monster->string, "%c", symbol);
 
@@ -75,6 +76,9 @@ int set_starting_position(Monster* monster, Room* room) {
 
 int move_monsters(Level* level) {
     for (int x = 0; x < level->num_of_monsters; x++) {
+        if (level->monsters[x]->alive == 0) {
+            continue;
+        }
         mvprintw(level->monsters[x]->position->y, level->monsters[x]->position->x, ".");
         if (level->monsters[x]->pathfinding == 1) {
             // random
@@ -148,6 +152,21 @@ int pathfinding_seek(Position* start, Position* destination) {
     }
     return 1;
 }
+
+Monster* get_monster_at(Position* position, Monster** monsters) {
+    for (int x = 0; x < 6; x++) {
+        if (position->y == monsters[x]->position->y && position->x == monsters[x]->position->x) {
+            return monsters[x];
+        }
+    }
+    return NULL;
+}
+
+void kill_monster(Monster* monster) {
+    mvprintw(monster->position->y, monster->position->x, ".");
+    monster->alive = 0;
+}
+
 /*
  * Spider:
  *      symbol: X
