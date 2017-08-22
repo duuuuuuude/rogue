@@ -9,26 +9,25 @@ Level* create_level(int level) {
     new_level->level = level;
     new_level->num_of_rooms = 3;
     new_level->user = player_setup();
+
+    place_player(new_level->rooms, new_level->user);
     add_monsters(new_level);
     return new_level;
 }
 
 Room** rooms_setup() {
     Room** rooms;
-    // TODO Room* rooms = (Room*)malloc(sizeof(Room)*6);
+
     rooms = (Room**)malloc(sizeof(Room*) * 6); // Array of 6 pointers?
 
-    rooms[0] = create_room(13, 13, 6, 8);
-    draw_room(rooms[0]);
-    
-    rooms[1] = create_room(40, 2, 6, 8);
-    draw_room(rooms[1]);
+    for (int x = 0; x < 6; x++) {
+        rooms[x] = create_room(x);
+        draw_room(rooms[x]);
 
-    rooms[2] = create_room(40, 10, 6, 12);
-    draw_room(rooms[2]);
-    
-    connect_doors(rooms[0]->doors[3], rooms[2]->doors[1]);
-    connect_doors(rooms[1]->doors[2], rooms[0]->doors[0]);
+    }
+     
+    //connect_doors(rooms[0]->doors[3], rooms[2]->doors[1]);
+    //connect_doors(rooms[1]->doors[2], rooms[0]->doors[0]);
 
     return rooms;
 }

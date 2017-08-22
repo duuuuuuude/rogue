@@ -3,7 +3,7 @@
 void screen_setup() { 
     srand(time(NULL));
     initscr();
-    printw("Hello world!");
+    //printw("Hello world!");
     noecho();
     refresh();
 }

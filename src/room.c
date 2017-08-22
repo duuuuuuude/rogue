@@ -24,36 +24,69 @@ int draw_room(Room* room) {
     mvprintw(room->doors[3]->y, room->doors[3]->x, "+");
 }
 
-Room* create_room(int x, int y, int height, int width) {
+Room* create_room(int grid) {
     Room* new_room;
     new_room = (Room*)malloc(sizeof(Room));
 
-    new_room->position.x = x;
-    new_room->position.y = y;
-    new_room->height = height;
-    new_room->width = width;
+    switch(grid) {
+        case 0:
+            new_room->position.x = 0;
+            new_room->position.y = 0;
+            break;
+
+        case 1:
+            new_room->position.x = 33;
+            new_room->position.y = 0;
+            break;
+
+        case 2:
+            new_room->position.x = 66;
+            new_room->position.y = 0;
+            break;
+
+        case 3:
+            new_room->position.x = 0;
+            new_room->position.y = 14;
+            break;
+
+        case 4:
+            new_room->position.x = 33;
+            new_room->position.y = 14;
+            break;
+
+        case 5:
+            new_room->position.x = 66;
+            new_room->position.y = 14;
+            break;
+    }
+    new_room->height = rand() % 6 + 4;
+    new_room->width = rand() % 14 + 4;
     
+    // offset
+    new_room->position.x += rand() % (29 - new_room->width + 1);
+    new_room->position.y += rand() % (9 - new_room->height + 1);
+
     new_room->doors = (Position**)malloc(sizeof(Position*) * 4);
 
     // top door
     new_room->doors[0] = (Position*)malloc(sizeof(Position));
-    new_room->doors[0]->x = rand() % (width - 2) + new_room->position.x + 1;
+    new_room->doors[0]->x = rand() % (new_room->width - 2) + new_room->position.x + 1;
     new_room->doors[0]->y = new_room->position.y;
 
     // bottom door
     new_room->doors[1] = (Position*)malloc(sizeof(Position));
-    new_room->doors[1]->x = rand() % (width - 2) + new_room->position.x + 1;
-    new_room->doors[1]->y = new_room->position.y + height - 1;
+    new_room->doors[1]->x = rand() % (new_room->width - 2) + new_room->position.x + 1;
+    new_room->doors[1]->y = new_room->position.y + new_room->height - 1;
 
     // left door
     new_room->doors[2] = (Position*)malloc(sizeof(Position));
-    new_room->doors[2]->y = rand() % (height - 2) + new_room->position.y + 1;
+    new_room->doors[2]->y = rand() % (new_room->height - 2) + new_room->position.y + 1;
     new_room->doors[2]->x = new_room->position.x;
 
     // right door
     new_room->doors[3] = (Position*)malloc(sizeof(Position));
-    new_room->doors[3]->y = rand() % (height - 2) + new_room->position.y + 1;
-    new_room->doors[3]->x = new_room->position.x + width - 1;
+    new_room->doors[3]->y = rand() % (new_room->height - 2) + new_room->position.y + 1;
+    new_room->doors[3]->x = new_room->position.x + new_room->width - 1;
 
     return new_room;
 }
@@ -71,6 +104,7 @@ int connect_doors(Position* door_one, Position* door_two) {
     while(1) {
         // step left
         if (abs((temp.x - 1) - door_two->x) < abs(temp.x - door_two->x) && (mvinch(temp.y, temp.x - 1) == ' ')) {
+
             prev.x = temp.x;
             temp.x = temp.x - 1;
         }

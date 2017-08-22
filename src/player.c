@@ -11,10 +11,15 @@ Player* player_setup() {
     new_player->gold = 0;
     new_player->max_health = 20;
     new_player->experience = 0;
-    mvprintw(new_player->position->y, new_player->position->x, "@");
-    move(new_player->position->y, new_player->position->x); // move cursor
-
     return new_player;
+}
+
+int place_player(Room** rooms, Player* user) {
+    user->position->x = rooms[3]->position.x + 1;
+    user->position->y = rooms[3]->position.y + 1;
+
+    mvprintw(user->position->y, user->position->x, "@");
+    move(user->position->y, user->position->x); // move cursor
 }
 
 Position* handle_input(int ch, Player* user) {

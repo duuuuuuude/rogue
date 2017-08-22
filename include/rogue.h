@@ -71,10 +71,11 @@ Player* player_setup();
 Position* handle_input(int, Player*);
 int check_pos(Position*, Level*); 
 int player_move(Position*, Player*, char**);
+int place_player(Room** rooms, Player* user); 
 
 // room functions
 int draw_room(Room*);
-Room* create_room(int x, int y, int height, int width); 
+Room* create_room(int); 
 int connect_doors(Position* door_one, Position* door_two);
 
 // monster functions 
