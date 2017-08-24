@@ -1,9 +1,11 @@
 CC = gcc
-CFLAGS = -lncurses -I$(IDIR)
+CFLAGS = -lncurses -I$(IDIR) -g
 
 IDIR = ./include/
 SRCDIR = ./src/
-SOURCES = $(SRCDIR)*.c
+
+SOURCES = $(SRCDIR)*.c\
+		  $(SRCDIR)utils/*.c
 
 all: rogue
 

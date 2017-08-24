@@ -1,7 +1,11 @@
 #include "rogue.h"
+#include "utils.h"
 
 int main () {
     screen_setup();
+
+    MAX_HEIGHT = 25;
+    MAX_WIDTH = 100;
 
     Level* level = create_level(1);
 

@@ -1,4 +1,5 @@
 #include "rogue.h"
+#include "utils.h"
 
 Level* create_level(int level) {
     Level* new_level;
@@ -26,8 +27,9 @@ Room** rooms_setup() {
 
     }
      
-    //connect_doors(rooms[0]->doors[3], rooms[2]->doors[1]);
-    //connect_doors(rooms[1]->doors[2], rooms[0]->doors[0]);
+//    connect_doors(rooms[0]->doors[3], rooms[1]->doors[1]);
+    pathfind(rooms[0]->doors[3], rooms[1]->doors[1]);
+
 
     return rooms;
 }
@@ -36,9 +38,9 @@ char** save_lvl_positions() {
     char** positions;
     positions = (char**)malloc(sizeof(char*) * 25);
 
-    for (int y = 0; y < 25; y++) {
+    for (int y = 0; y < MAX_HEIGHT; y++) {
         positions[y] = (char*)malloc(sizeof(char) * 100);
-        for (int x = 0; x < 100; x++) {
+        for (int x = 0; x < MAX_WIDTH; x++) {
             positions[y][x] = mvinch(y, x);
         }
     }

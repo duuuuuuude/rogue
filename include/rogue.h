@@ -57,6 +57,10 @@ typedef struct Monster {
     Position* position;
 } Monster;
 
+int MAX_HEIGHT;
+int MAX_WIDTH;
+
+
 // screen functions
 void screen_setup();
 int print_gamehub(Level*); 
