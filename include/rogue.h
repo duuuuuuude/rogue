@@ -27,12 +27,17 @@ typedef struct Room {
     int height;
     int width;
 
-    Position** doors;
-    
+    struct Door** doors;
+    int num_of_doors;
     // Each r. stores info of how many monsters/items it has
     // Monster** monsters
     // Item** items
 } Room;
+
+typedef struct Door {
+	Position position;
+	int connected; // 0 - false; 1 - true
+} Door;
 
 typedef struct Player {
     Position* position;
@@ -79,8 +84,8 @@ int place_player(Room** rooms, Player* user);
 
 // room functions
 int draw_room(Room*);
-Room* create_room(int); 
-int connect_doors(Position* door_one, Position* door_two);
+Room* create_room(int grid, int num_of_doors);
+void connect_doors(Level*);
 
 // monster functions 
 int add_monsters(Level*);

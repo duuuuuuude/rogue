@@ -5,14 +5,17 @@ Level* create_level(int level) {
     Level* new_level;
     new_level = malloc(sizeof(Level));
 
-    new_level->rooms = rooms_setup();
-    new_level->tiles = save_lvl_positions();
     new_level->level = level;
-    new_level->num_of_rooms = 3;
-    new_level->user = player_setup();
+    new_level->num_of_rooms = 6;
+    new_level->rooms = rooms_setup();
+    connect_doors(new_level);
+    new_level->tiles = save_lvl_positions();
 
+    new_level->user = player_setup();
     place_player(new_level->rooms, new_level->user);
+
     add_monsters(new_level);
+
     return new_level;
 }
 
@@ -22,16 +25,48 @@ Room** rooms_setup() {
     rooms = (Room**)malloc(sizeof(Room*) * 6); // Array of 6 pointers?
 
     for (int x = 0; x < 6; x++) {
-        rooms[x] = create_room(x);
+        rooms[x] = create_room(x, 4);
         draw_room(rooms[x]);
 
     }
-     
-//    connect_doors(rooms[0]->doors[3], rooms[1]->doors[1]);
-    pathfind(rooms[0]->doors[3], rooms[1]->doors[1]);
-
 
     return rooms;
+}
+
+void connect_doors(Level* level) {
+	int random_room, random_door;
+	int count;
+	// for every room
+	for (int i = 0; i < level->num_of_rooms; i++) {
+		// for every door
+		for (int j = 0; j < level->rooms[i]->num_of_doors; j++) {
+			// if picked door is already connected, go to next door
+			if (level->rooms[i]->doors[j]->connected == 1) {
+				continue;
+			}
+
+			count = 0;
+
+			while (count < 2) {
+				// pick random door from random room
+				random_room = rand() % level->num_of_rooms;
+				random_door = rand() % level->rooms[random_room]->num_of_doors;
+				// if randomly picked door already connected or we picked a room we're currently in..
+				if (level->rooms[random_room]->doors[random_door]->connected == 1 || random_room == i) {
+					count++;
+					continue;
+				}
+				// connect this door with randomly picked one
+				pathfind(&level->rooms[random_room]->doors[random_door]->position,
+						&level->rooms[i]->doors[j]->position);
+				// mark this room and randomly picked one as connected
+				level->rooms[random_room]->doors[random_door]->connected = 1;
+				level->rooms[i]->doors[j]->connected = 1;
+				// if we've successfully connected, we need to brakes
+				break;
+			}
+		}
+	}
 }
 
 char** save_lvl_positions() {
