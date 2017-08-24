@@ -6,10 +6,20 @@ void add_to_frontier(int** frontier, int frontier_count, int y, int x) {
 	frontier[frontier_count][1] = x;
 }
 
+int check_position(int y, int x) {
+	char temp = mvinch(y, x);
+
+	if (temp == '.' || temp == '|' || temp == '-') {
+		return 0;
+	} else {
+		return 1;
+	}
+}
+
 // Add neighbor cells of (x, y) to queue(aka frontier) and set (aka CameFrom array)
 int add_neighbour_cells(int** frontier, int frontier_count, int*** came_from, int y, int x) {
     // add coord to north
-    if (y > 0 && came_from[y - 1][x][0] < 0 ) {
+    if (y > 0 && came_from[y - 1][x][0] < 0 && check_position(y - 1, x)) {
         // add to queue
     	add_to_frontier(frontier, frontier_count, y - 1, x);
         frontier_count++;
@@ -19,7 +29,7 @@ int add_neighbour_cells(int** frontier, int frontier_count, int*** came_from, in
     }
 
     // add to queue coord to south
-    if (y < (MAX_HEIGHT - 1) && came_from[y + 1][x][0] < 0) {
+    if (y < (MAX_HEIGHT - 1) && came_from[y + 1][x][0] < 0 && check_position(y + 1, x)) {
         add_to_frontier(frontier, frontier_count, y + 1, x);
         frontier_count++;
         came_from[y + 1][x][0] = y;
@@ -27,7 +37,7 @@ int add_neighbour_cells(int** frontier, int frontier_count, int*** came_from, in
     }
 
     // add to queue coord to east
-    if (x < (MAX_WIDTH - 1) && came_from[y][x + 1][0] < 0) {
+    if (x < (MAX_WIDTH - 1) && came_from[y][x + 1][0] < 0 && check_position(y, x + 1)) {
         add_to_frontier(frontier, frontier_count, y, x + 1);
         frontier_count++;
         came_from[y][x + 1][0] = y;
@@ -35,7 +45,7 @@ int add_neighbour_cells(int** frontier, int frontier_count, int*** came_from, in
     }
 
     // add to queue coord to west
-    if (x > 0 && came_from[y][x - 1][0] < 0 ) {
+    if (x > 0 && came_from[y][x - 1][0] < 0 && check_position(y, x - 1)) {
         add_to_frontier(frontier, frontier_count, y, x - 1);
         frontier_count++;
         came_from[y][x - 1][0] = y;
@@ -103,8 +113,9 @@ void pathfind(Position* start, Position* end) {
 	x = end->x;
 
 	while (y != start->y || x != start->x) {
-		y = came_from[y][x][0];
-		x = came_from[y][x][1];
+		int temp_y = y;
+		y = came_from[temp_y][x][0];
+		x = came_from[temp_y][x][1];
 		mvprintw(y, x, "+");
 		getch();
 	}
