@@ -66,12 +66,8 @@ Monster* create_monster(char symbol, int health, int attack, int speed, int defe
 }
 
 int set_starting_position(Monster* monster, Room* room) {
-
     monster->position->x = (rand() % (room->width - 2)) + room->position.x + 1;
     monster->position->y = (rand() % (room->height - 2)) + room->position.y + 1;
-
-    mvprintw(monster->position->y, monster->position->x, monster->string);
-
 }
 
 int move_monsters(Level* level) {
@@ -79,7 +75,6 @@ int move_monsters(Level* level) {
         if (level->monsters[x]->alive == 0) {
             continue;
         }
-        mvprintw(level->monsters[x]->position->y, level->monsters[x]->position->x, ".");
         if (level->monsters[x]->pathfinding == 1) {
             // random
             pathfinding_random(level->monsters[x]->position);
@@ -88,7 +83,6 @@ int move_monsters(Level* level) {
             // seek
             pathfinding_seek(level->monsters[x]->position, level->user->position);
         }
-        mvprintw(level->monsters[x]->position->y, level->monsters[x]->position->x, level->monsters[x]->string);
     }
 }
 
@@ -163,9 +157,16 @@ Monster* get_monster_at(Position* position, Monster** monsters) {
 }
 
 void kill_monster(Monster* monster) {
-    mvprintw(monster->position->y, monster->position->x, ".");
     monster->alive = 0;
 }
+
+void draw_monster(Monster* monster) {
+	if (monster->alive) {
+		mvprintw(monster->position->y, monster->position->x, monster->string);
+	}
+}
+
+
 
 /*
  * Spider:

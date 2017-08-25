@@ -18,7 +18,6 @@ int place_player(Room** rooms, Player* user) {
     user->position->x = rooms[3]->position.x + 1;
     user->position->y = rooms[3]->position.y + 1;
 
-    mvprintw(user->position->y, user->position->x, "@");
     move(user->position->y, user->position->x); // move cursor
 }
 
@@ -78,22 +77,17 @@ int check_pos(Position* next_pos, Level* level) {
             break;
 
         default:
-            move(user->position->y, user->position->x);
             break;
     }
 }
 
 /* change player's coords */
 int player_move(Position* new_position, Player* user, char** level) {
-    char buffer[8];
-
-    sprintf(buffer, "%c", level[user->position->y][user->position->x]);
-
-    mvprintw(user->position->y, user->position->x, buffer);
-    
     user->position->y = new_position->y;
     user->position->x = new_position->x;
+}
 
-    mvprintw(user->position->y, user->position->x, "@");
-    move(user->position->y, user->position->x);
+void draw_player(Player* player) {
+	mvprintw(player->position->y, player->position->x, "@");
+	move(player->position->y, player->position->x);
 }

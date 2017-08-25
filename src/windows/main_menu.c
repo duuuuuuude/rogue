@@ -21,7 +21,7 @@ int main_menu(int numberItems, char * choices[]) {
     ITEM *current;
 
     for (i = 0; i < numberItems; i++) {
-        items[i] = new_item( choices[i], "");
+    	items[i] = new_item(choices[i], "");
     }
     items[i] = (ITEM*)NULL;
 
