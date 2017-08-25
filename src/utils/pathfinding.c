@@ -117,7 +117,7 @@ void pathfind(Position* start, Position* end) {
 		y = came_from[temp_y][x][0];
 		x = came_from[temp_y][x][1];
 		mvprintw(y, x, "+");
-		getch();
+		//getch();
 	}
 }
 

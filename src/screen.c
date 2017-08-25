@@ -1,10 +1,12 @@
 #include "rogue.h"
 
 void screen_setup() { 
+	MAX_HEIGHT = 25;
+	MAX_WIDTH = 100;
     srand(time(NULL));
     initscr();
-    //printw("Hello world!");
     noecho();
+    keypad(stdscr, TRUE);
     refresh();
 }
 int print_gamehub(Level* level) {
